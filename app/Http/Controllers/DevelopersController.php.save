@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+
+class DevelopersController extends Controller
+{
+    	public function index(Request $request){
+
+		$developers = App\Developers::all();
+		if(!$developers){
+			return [
+                                'status' => 'error',
+                                'message' => 'Users not found'
+                                ];
+		}
+
+		return [
+			'status' => 'ok', 
+			'items' => $developers
+			];
+	}
+
+	public function show(Request $request, $id){
+		try{
+			$developer = App\Developers::find($id);
+			return [
+				'status' => 'ok',
+				'data' => $developer
+				];
+		}catch(\Exception $e){
+			return [
+				'status' => 'error', 
+				'message' => 'User with id='.$id.' not found'
+				];
+		}
+	}
+
+	public function store(Request $request){
+
+		if(empty($request->get('name'))){
+			return [
+				'status' => 'error', 
+				'message' => 'Name can not be empty'
+				];
+		}
+
+		if(empty($request->get('position'))){
+                        return [
+                                'status' => 'error',
+                                'message' => 'Position can not be empty'
+                                ];
+                }
+
+		$developer = new App\Developer();
+		$developer->name = $request->get('name');
+		$developer->position = $request->get('position');
+		$developer->save();
+	}
+
+	public function destroy(Request $request, $id){
+		$developer = App\Developers::find($id);
+		if(empty($developer)){
+			return [
+				'status' => 'error',
+				'message' => 'Developer with id='.$id.' not found'
+				];
+		}
+		$developer->delete();
+		return [
+			'status' => 'ok',
+			'message' => 'Developer removed successfully'
+			];
+	}
+}
