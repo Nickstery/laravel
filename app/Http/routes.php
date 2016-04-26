@@ -17,4 +17,4 @@ Route::get('/', function () {
 
 Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');
-Route::any('auth/logout', 'AuthController@logout');
+Route::any('logout', 'AuthController@logout');

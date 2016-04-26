@@ -11,8 +11,6 @@ use App\User as User;
 class AuthController extends Controller
 {
     public function register(Request $request){
-        error_reporting(E_ALL);
-        ini_set('display_errors', 1);
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
@@ -86,7 +84,7 @@ class AuthController extends Controller
         $token = $request->header('token');
         $userData = last(explode('.',$token));
         $data = json_decode(base64_decode($userData));
-        $res = User::query()->where('email', $data->user->email)->update(array('email' => null));
+        $res = User::query()->where('email', $data->user->email)->where('token', $token)->update(array('email' => null));
 
         if(!$res){
             return response()
