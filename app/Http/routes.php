@@ -15,5 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::resource('/test', 'TestController');
-Route::resource('/developers', 'DevelopersController');
+Route::post('auth/register', 'AuthController@register');
+Route::post('auth/login', 'AuthController@login');
+Route::any('auth/logout', 'AuthController@logout');
