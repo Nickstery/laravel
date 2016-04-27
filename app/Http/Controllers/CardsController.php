@@ -12,6 +12,7 @@ class CardsController extends Controller
 {
     public function index(User $user){
         $cards = Cards::query()->where('owner_id', '=', $user->id)->get();
+
         return response()->json(['items' => $cards, 'count' => sizeof($cards)]);
     }
 
@@ -54,8 +55,8 @@ class CardsController extends Controller
         return response()->json(['test' => 'PUT/PATCH'], 200);
     }
 
-    public function destroy($id){
-        $card = Cards::find($id);
+    public function destroy($id, User $user){
+        $card = Cards::query()->where('id', '=', $id)->where('owner_id', '=', $user->id)->first();
         if(!$card){
             return response()->json(['code' => 404, 'message' => 'Card with id=' . $id . ' not found'], 404);
         }
