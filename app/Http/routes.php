@@ -18,3 +18,7 @@ Route::get('/', function () {
 Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');
 Route::any('logout', 'AuthController@logout');
+
+Route::group(['prefix' => 'v1', 'middleware' => ['auth']],function(){
+    Route::resource('cards', 'CardsController');
+});
