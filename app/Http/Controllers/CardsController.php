@@ -43,8 +43,8 @@ class CardsController extends Controller
         $card = new Cards();
         $card->id = null;
         $card->owner_id = $user->id;
-        $card->company = $request->get('company');
-        $card->about = $request->get('about');
+        $card->company = strip_tags($request->get('company'));
+        $card->about = strip_tags($request->get('about'));
         $card->save();
         $card->owner_name = $user->name;
 

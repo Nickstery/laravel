@@ -29,11 +29,11 @@ class AuthController extends Controller
 
         $user = new User();
         $user->id = null;
-        $user->name = $request->get('name');
+        $user->name = strip_tags($request->get('name'));
         $user->password = md5($request->get('password'));
-        $user->email = $request->get('email');
+        $user->email = strip_tags(($request->get('email')));
 
-        $user->token = md5(time().rand(0,100000)).'.'.base64_encode(json_encode(['user' => ['email' => $request->get('email')]]));
+        $user->token = md5(time().rand(0,100000)).'.'.base64_encode(json_encode(['user' => ['email' => $user->email]]));
         if(!$user->save()){
             return response()->json(
                 [
