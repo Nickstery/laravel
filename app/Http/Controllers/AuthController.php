@@ -50,7 +50,7 @@ class AuthController extends Controller
 
         $validator = Validator::make($request->all(), [
             'password' => 'required|string|min:8',
-            'email' => 'required|unique:users|email'
+            'email' => 'required|email'
         ]);
 
         if(!empty($validator->errors()->all())){
@@ -62,9 +62,16 @@ class AuthController extends Controller
                 ],400);
         }
 
+        $token = md5(time().rand(0,100000)).'.'.base64_encode(json_encode(['user' => ['email' => $request->get('email')]]));
+
+        User::query()
+            ->where('email', $request->get('email'))
+            ->where('password', md5($request->get('password')))
+            ->update(array('token' => $token));;
+
         $user = User::query()
             ->where('email', $request->get('email'))
-            ->where('password', $request->get('password'))
+            ->where('password', md5($request->get('password')))
             ->first();
 
         if(!$user){
@@ -84,8 +91,17 @@ class AuthController extends Controller
         $token = $request->header('token');
         $userData = last(explode('.',$token));
         $data = json_decode(base64_decode($userData));
-        $res = User::query()->where('email', $data->user->email)->where('token', $token)->update(array('email' => null));
-
+        try {
+            $res = User::query()->where('email', $data->user->email)->where('token',
+                $token)->update(array('token' => null));
+        }catch(\Exception $e){
+            return response()
+                ->json(
+                    [
+                        'code' => 400,
+                        'message' => 'Unauthorized.'],
+                    401);
+        }
         if(!$res){
             return response()
                 ->json(
