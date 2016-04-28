@@ -20,5 +20,6 @@ Route::post('auth/login', 'AuthController@login');
 Route::any('logout', 'AuthController@logout');
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth']],function(){
+    Route::resource('user', 'UsersController');
     Route::resource('cards', 'CardsController');
 });
