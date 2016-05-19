@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use League\Flysystem\Exception;
 use Storage;
 use App\Images as Images;
 
@@ -14,8 +15,8 @@ class ImageUploader
 
         $filename  = "profile.".$imgObj->getClientOriginalExtension();
 
-        if(!file(storage_path() . '/user_uploads/'.$owner_id."/")){
-            mkdir(storage_path() . '/user_uploads/'.$owner_id."/");
+        if (!file_exists(storage_path() . '/user_uploads/' . $owner_id . "/")) {
+            mkdir(storage_path() . '/user_uploads/' . $owner_id . "/");
         }
 
         $path = storage_path('user_uploads/'.$owner_id."/" . $filename);
@@ -25,7 +26,7 @@ class ImageUploader
         if(empty($userImg)){
             $userImg = new Images();
         }
-        $userImg->image_name = 'profile.png';
+        $userImg->image_name = $filename;
         $userImg->owner_id = $owner_id;
         $userImg->save();
         return $filename;

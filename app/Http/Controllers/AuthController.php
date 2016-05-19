@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Images;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -83,7 +84,14 @@ class AuthController extends Controller
                 ],401);
         }
 
-        return response()->json($user->toArray(),200);
+        $img = Images::query()->where('owner_id','=',$user->id)->first();
+        $result = $user->toArray();
+
+        if(!empty($img)){
+            $result['avatar'] = env('APP_URL').'/v1/image/'.$user->id."/".$img->image_name;
+        }
+
+        return response()->json($result,200);
     }
 
     public function logout(Request $request){
