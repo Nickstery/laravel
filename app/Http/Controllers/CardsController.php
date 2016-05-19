@@ -52,6 +52,7 @@ class CardsController extends Controller
     }
 
     public function update(){
+        
         return response()->json(['test' => 'PUT/PATCH'], 200);
     }
 
