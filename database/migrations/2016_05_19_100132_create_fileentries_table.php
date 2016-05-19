@@ -12,8 +12,11 @@ class CreateFileentriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('fileentries', function (Blueprint $table) {
-            //
+        Schema::create('images', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('owner_id');
+            $table->string('image_name');
+            $table->timestamps();
         });
     }
 
@@ -24,8 +27,6 @@ class CreateFileentriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('fileentries', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }
