@@ -7,6 +7,9 @@ Route::get('/', function () {
 
 Route::get('v1/image/{owner_id}/{filename}', function($owner_id, $filename, \Illuminate\Http\Request $request){
     $path = storage_path() . '/user_uploads/'.$owner_id."/". $filename;
+    if(!file(storage_path() . '/user_uploads/'.$owner_id."/")){
+        mkdir(storage_path() . '/user_uploads/'.$owner_id."/");
+    }
     if(!File::exists($path)) abort(404);
     $file = File::get($path);
     $type = File::mimeType($path);
