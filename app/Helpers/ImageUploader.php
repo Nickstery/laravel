@@ -13,6 +13,11 @@ class ImageUploader
         }
 
         $filename  = "profile.".$imgObj->getClientOriginalExtension();
+
+        if(!file(storage_path() . '/user_uploads/'.$owner_id."/")){
+            mkdir(storage_path() . '/user_uploads/'.$owner_id."/");
+        }
+
         $path = storage_path('user_uploads/'.$owner_id."/" . $filename);
         \Image::make($imgObj->getRealPath())->save($path);
         //ONLY ONE PIC!!!
