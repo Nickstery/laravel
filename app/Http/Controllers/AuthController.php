@@ -86,9 +86,9 @@ class AuthController extends Controller
 
         $img = Images::query()->where('owner_id','=',$user->id)->first();
         $result = $user->toArray();
-
+        $result['avatar'] = null;
         if(!empty($img)){
-            $result['avatar'] = env('APP_URL').'/v1/image/'.$user->id."/".$img->image_name;
+            $result['avatar'] = env('APP_URL').'/v1/image/'.$user->id."/".$img->image_name."?v=".$img->updated_at;
         }
 
         return response()->json($result,200);
@@ -121,5 +121,18 @@ class AuthController extends Controller
             ->json(
                 ['message' => 'Successfully logged out.'],
                 200);
+    }
+
+    public function checkToken(User $user, Request $request){
+        if($user->token == $request->header('token')){
+            $img = Images::query()->where('owner_id','=',$user->id)->first();
+            $result = $user->toArray();
+            $result['avatar'] = null;
+            if(!empty($img)){
+                $result['avatar'] = env('APP_URL').'/v1/image/'.$user->id."/".$img->image_name."?v=".$img->updated_at;
+            }
+            return response()->json($result, 200);
+        }
+        return response()->json(['status' => 'error', 'message' => 'Invalid token received'], 401);
     }
 }

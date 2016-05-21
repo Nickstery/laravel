@@ -6,7 +6,8 @@ Route::get('/', function () {
 
 
 Route::get('v1/image/{owner_id}/{filename}', function($owner_id, $filename, \Illuminate\Http\Request $request){
-    $path = storage_path() . '/user_uploads/'.$owner_id."/". $filename;
+    $filename = explode("?", $filename);
+    $path = storage_path() . '/user_uploads/'.$owner_id."/". $filename[0];
     if(!File::exists($path)) abort(404);
     $file = File::get($path);
     $type = File::mimeType($path);
@@ -22,6 +23,7 @@ Route::any('logout', 'AuthController@logout');
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth']],function(){
 
+    Route::post('auth/checkToken', 'AuthController@checkToken');
 
     Route::post('image', function(\Illuminate\Http\Request $request, App\User $user){
         $img = $request->file('image');
@@ -32,7 +34,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth']],function(){
         if(!$res){
             return response()->json(['status' => 'error', 'message' => 'Image extention is incorrect, must be one of: PNG or JPG'], 404);
         }
-        return response()->json(['status' => 'ok', 'message' => 'All is ok SANYOK!', 'data' => ['image_url' => env('APP_URL')."/v1/image/".$user->id."/".$res]]);
+        return response()->json(
+            [
+                'status' => 'ok',
+                'message' => 'All is ok SANYOK!',
+                'data' => [
+                    'image_url' => env('APP_URL')."/v1/image/".$user->id."/".$res->image_name."?v=".$res->updated_at
+                ]
+            ]
+        );
     });
 
     Route::resource('user', 'UsersController');

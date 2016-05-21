@@ -28,7 +28,7 @@ class ImageUploader
         $userImg->image_name = $filename;
         $userImg->owner_id = $owner_id;
         $userImg->save();
-        return $filename;
+        return $userImg;
     }
 
     private static function _checkMimeType($mimeType){
