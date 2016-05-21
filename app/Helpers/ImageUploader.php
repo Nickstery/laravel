@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Helpers;
-use League\Flysystem\Exception;
 use Storage;
 use App\Images as Images;
 
