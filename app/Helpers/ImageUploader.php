@@ -27,6 +27,7 @@ class ImageUploader
         }
         $userImg->image_name = $filename;
         $userImg->owner_id = $owner_id;
+        $userImg->touch(); // to override the updated_at timestamp
         $userImg->save();
         return $userImg;
     }
